@@ -1,0 +1,10 @@
+# editors/OS
+*.swp
+*~
+\#*
+.\#*
+.DS_Store
+
+# repo stuff
+/App-perlenv*
+fatlib

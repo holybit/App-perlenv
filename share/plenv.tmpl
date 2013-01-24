@@ -1,0 +1,41 @@
+# This file must be sourced (e.g., '. ./plenev') from a shell.
+# Running it directly (e.g., './plenv') does nothing of use to your shell env.
+
+plenv-off () {
+    if [ ! "$1" = "nounset" ] ; then
+        if [ -e "$PERLENV_ROOT/bin/plenv-unset" ]; then
+            . "$PERLENV_ROOT/bin/plenv-unset"
+        fi
+    fi
+
+    # reset old environment variables
+    if [ -n "$_OLD_PATH" ] ; then
+        export PATH="$_OLD_PATH"
+        unset _OLD_PATH
+    fi
+
+    # Clear past shell commands from builtin hash table
+    if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
+        hash -r 2> /dev/null
+    fi
+
+    if [ ! "$1" = "nounset" ] ; then
+        # remove plenv-off function definition
+        unset -f plenv-off
+    fi
+}
+
+# unset irrelevant variables
+plenv-off nounset
+
+export _OLD_PATH="$PATH"
+{PLENV}
+
+if [ -e "$PERLENV_ROOT/bin/plenv-set" ]; then
+    . "$PERLENV_ROOT/bin/plenv-set"
+fi
+
+# Clear past shell commands from builtin hash table
+if [ -n "$BASH" -o -n "$ZSH_VERSION" ] ; then
+    hash -r 2> /dev/null
+fi

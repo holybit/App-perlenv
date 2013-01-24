@@ -70,8 +70,16 @@ sub perlenv_root_setup {
     elsif ( $ARGV[0] !~ /\// ) {
         $conf->{env}->{PERLENV_ROOT} = abs_path( $ARGV[0] );
     }
-    else {
+
+    # $ARGV[0] precedence over shell $PERLENV_ROOT
+    if ( $ARGV[0] ) {
         $conf->{env}->{PERLENV_ROOT} = $ARGV[0];
+    }
+
+    $conf->{env}->{PERLENV_ROOT} =~ s/\/+$//;
+
+    if ( !$params{quiet} ) {
+        print "PERLENV_ROOT=$conf->{env}->{PERLENV_ROOT}\n";
     }
 
     # TODO VERSION problem when doing dev work
@@ -127,7 +135,7 @@ sub create_perlenv_root {
 
     mkpath "$conf->{env}->{PERLENV_ROOT}/bin";
     if ( !$params{quiet} ) {
-        print "PERLENV_ROOT created: $conf->{env}->{PERLENV_ROOT}\n";
+        print "bin dir created: $conf->{env}->{PERLENV_ROOT}/bin\n";
     }
 
     my $symlink_exists = eval {
@@ -136,13 +144,13 @@ sub create_perlenv_root {
     };
     if ( !$symlink_exists ) {
         print
-            "ERROR: Symlink creation failed: $conf->{env}->{PERLENV_ROOT}/bin/perl -> $Config{perlpath}\n";
+            "ERROR: perl symlink creation failed: $conf->{env}->{PERLENV_ROOT}/bin/perl -> $Config{perlpath}\n";
         exit 1;
     }
     else {
         if ( !$params{quiet} ) {
             print
-                "Symlink created: $conf->{env}->{PERLENV_ROOT}/bin/perl -> $Config{perlpath}\n";
+                "perl symlink created: $conf->{env}->{PERLENV_ROOT}/bin/perl -> $Config{perlpath}\n";
         }
     }
 
@@ -154,10 +162,11 @@ sub create_perlenv_root {
 sub create_plenv_script {
     my $conf = shift;
 
-    open( my $tmpl, "<", "$share_dir/../share/plenv.tmpl" )
-        or die "Cannot open < $share_dir/../share/plenv.tmpl: $!";
-    open( my $plenv, ">", "$conf->{env}->{PERLENV_ROOT}/bin/plenv" )
-        or die "Cannot open > $conf->{env}->{PERLENV_ROOT}/bin/plenv: $!";
+    my $file_plenv = "$conf->{env}->{PERLENV_ROOT}/bin/plenv";
+
+    open( my $tmpl, "<", "$share_dir../share/plenv.tmpl" )
+        or die "Cannot open < $share_dir../share/plenv.tmpl: $!";
+    open( my $plenv, ">", $file_plenv ) or die "Cannot open > $file_plenv: $!";
     while (<$tmpl>) {
         if (/\{PLENV\}/) {
             foreach my $key ( sort keys $conf->{env} ) {
@@ -170,6 +179,14 @@ sub create_plenv_script {
     }
     close($tmpl);
     close($plenv);
+
+    chmod 0755, $file_plenv;
+
+    if ( !$params{quiet} ) {
+        print "plenv script created: $conf->{env}->{PERLENV_ROOT}/bin/plenv\n";
+    }
+
+    return 1;
 }
 
 # run
@@ -179,7 +196,7 @@ usage()   if $help;
 
 eval { $share_dir = File::ShareDir::dist_dir('App-perlenv'); };
 if ($@) {
-    $share_dir = dirname( abs_path($0) );
+    $share_dir = ( fileparse( abs_path($0) ) )[1];
 }
 
 # $conf is the default data structure for all exposed vars (e.g., [env])
@@ -208,7 +225,7 @@ create_perlenv_root($conf);
 delete $conf->{env}->{PERLVERSION};
 create_plenv_script($conf);
 
-p $conf;
+#p $conf;
 
 1;
 
@@ -249,7 +266,7 @@ ideas, requests and bugs to github.
     #
     $ export PERLENV_ROOT=/tmp/myproj/env
     $ perlenv
-    $ . $PERLENV_ROOT/plenv
+    $ . $PERLENV_ROOT/bin/plenv
 
     # perlbrew detection is automatic assuming the shell
     # environment is already setup

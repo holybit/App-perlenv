@@ -10,7 +10,7 @@ use File::Path qw(mkpath);
 use File::Basename;
 
 use Config::Tiny;
-use Data::Printer;
+#use Data::Printer;
 use File::ShareDir;
 use local::lib;
 
@@ -238,14 +238,16 @@ perlenv - A tool to create Perl environments
 =head1 WARNING
 
 B<This software is under development and considered alpha quality until version
-v1.0. Things might be broke and/or less then ideal. Discussion, patches, and 
-bugs filled on github are all welcome.>
+v1.0. Things might be broke and/or less then ideal. If you have ideas about
+making App::perlenv better please open an issue on github or contact the author,
+holybit, on perl IRC toolchain channel. All development for this module is
+conducted on github.>
 
 =head1 NOTICE
 
-If you think the design is helter skelter now is the time to speak up. Design,
-at this point is minimal to incourage input and refinement. Please, file your
-ideas, requests and bugs to github.
+If you think the design is helter skelter now is the time to speak up. Currently
+design is minimal to encourage input and refinement. All development for this
+module is conducted on github.
 
 =head1 SYNOPSIS
 
@@ -458,6 +460,8 @@ L<local::lib|local::lib>, L<App::Perlbrew|App::Perlbrew> and L<virtualenv|virtua
 Does not work on Windows. Patches welcome.
 
 =back
+
+Please, file all bugs on <github|https://github.com/holybit/App-perlenv/issues>.
 
 =head1 ACKNOWLEDGMENTS
 

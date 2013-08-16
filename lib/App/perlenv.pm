@@ -259,7 +259,7 @@ __END__
 
 =head1 NAME
 
-perlenv - A tool to create Perl environments
+perlenv - Create independent Perl environments
 
 =head1 WARNING
 
@@ -280,14 +280,17 @@ module is conducted on github.
     # Setup an app/project to run under perlenv
     #
     $ cd MYPROJ
-    $ perlenv env
-    # above command creats env/plenv
-    # source env/plenv to set your shells Perl environment
-    $ . env/plenv
-    # MYPROJ/env/perl symlinks to first Perl on env C<PATH>
-    # all modules will be installed to MYPROJ/env/perl5/PERLVERSION/
-    # later you can revert your shell environment
-    $ plenv-off
+    $ perlenv perlenv
+
+    # source activate to set your shells Perl environment
+    $ cd perlenv
+    $ source bin/activate
+
+    # MYPROJ/perlenv/perl symlinks to first Perl on env C<PATH>
+
+    # all modules installed to MYPROJ/env/perl5/PERLVERSION/
+    # later you can revert your shell environment with shell function
+    $ deactivate
 
     # Setup an app/project to run under perlenv
     # using shell variable
@@ -301,8 +304,8 @@ module is conducted on github.
     #
     $ perlbrew use perl-5.16.2
     $ cd MYPROJ
-    $ perlenv env
-    $ . env/plenv
+    $ perlenv ENV
+    $ source ENV/activate
 
     # setup to use Perl other then your PATH default
     #
@@ -321,7 +324,7 @@ module is conducted on github.
 
 =head1 DESCRIPTION
 
-C<perlenv> is a tool to create virtual Perl environments. There are a number
+C<perlenv> is a tool to create independent Perl environments. There are a number
 of common environment dilemmas most projects with Perl code face.
 
 =over

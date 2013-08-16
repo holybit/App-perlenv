@@ -1,7 +1,7 @@
-# This file must be sourced (e.g., '. ./plenev') from a shell.
-# Running it directly (e.g., './plenv') does nothing of use to your shell env.
+# This file must be sourced (e.g., '. ./activate') from a shell.
+# Running it directly does nothing.
 
-plenv-off () {
+deactivate () {
     if [ ! "$1" = "nounset" ] ; then
         if [ -e "$PERLENV_ROOT/bin/plenv-unset" ]; then
             . "$PERLENV_ROOT/bin/plenv-unset"
@@ -26,7 +26,7 @@ plenv-off () {
 }
 
 # unset irrelevant variables
-plenv-off nounset
+deactivate nounset
 
 export _OLD_PATH="$PATH"
 {PLENV}
